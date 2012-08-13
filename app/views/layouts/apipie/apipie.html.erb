@@ -8,6 +8,8 @@
 	<% %w[bundled/bootstrap.min.css
 	        application.css
 	        bundled/prettify.css
+	        bundled/font-awesome.css
+	        bundled/font-awesome-ie7.css
 	        bundled/bootstrap-responsive.min.css ].each do |file| %>
 	  <link type="text/css" rel="stylesheet"
 	          href="<%= Apipie.full_url("stylesheets/#{file}") %>"/>
