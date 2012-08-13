@@ -1,11 +1,19 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px;
+  background-image: url(http://www.passdock.com/templates/passdock/images/pattern_light_blue.jpg);
 }
 .sidebar-nav {
   padding: 9px 0;
 }
 
+.navbar-inner{
+	height:41px;
+}
+
+.well.white{
+    background-color: #fff;
+}
 
 /*  Font Awesome
     the iconic font designed for use with Twitter Bootstrap
