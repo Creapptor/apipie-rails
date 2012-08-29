@@ -1,7 +1,7 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px;
-  background-image: url(http://www.passdock.com/templates/passdock/images/pattern_light_blue.jpg);
+  background-image: url('/assets/pattern_gray.jpg');
 }
 .sidebar-nav {
   padding: 9px 0;
