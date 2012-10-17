@@ -36,6 +36,7 @@ module Apipie
       desc = app.get_description || ''
       @full_description = Apipie.markup_to_html(desc)
       @errors = app.get_errors
+      @successes = app.get_successes
       @params_ordered = app.get_params
       @examples = app.get_examples
 
@@ -85,6 +86,19 @@ module Apipie
       @merged_errors.concat(@errors)
       return @merged_errors
     end
+    
+    def successes
+      return @merged_successes if @merged_successes
+      @merged_successes = []
+      if @resource
+        # exclude overwritten parent errors
+        @merged_successes = @resource._successes_ordered.find_all do |err|
+          !@errors.any? { |e| e.code == err.code }
+        end
+      end
+      @merged_successes.concat(@successes)
+      return @merged_successes
+    end
 
     def doc_url
       Apipie.full_url("#{@resource._id}/#{@method}")
@@ -126,6 +140,7 @@ module Apipie
         :formats => formats,
         :full_description => @full_description,
         :errors => errors.map(&:to_json),
+        :successes => successes.map(&:to_json),
         :params => params_ordered.map(&:to_json).flatten,
         :examples => @examples,
         :see => @see,

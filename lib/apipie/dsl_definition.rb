@@ -74,6 +74,21 @@ module Apipie
       Apipie.last_formats = formats
     end
 
+    # Describe possible successes
+    #
+    # Example:
+    #   success :desc => "speaker is sleeping", :code => 200
+    #   success 200, "speaker is sleeping"
+    #   def hello_world
+    #     return 200 if self.speaker.sleeping?
+    #     puts "hello world"
+    #   end
+    #
+    def success(*args) #:doc:
+      return unless Apipie.active_dsl?
+      Apipie.last_successes << Apipie::SuccessDescription.new(args)
+    end
+
     # Describe possible errors
     #
     # Example:

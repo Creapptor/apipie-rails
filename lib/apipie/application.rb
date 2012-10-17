@@ -12,7 +12,7 @@ module Apipie
       end
     end
 
-    attr_accessor :last_api_args, :last_errors, :last_params, :last_description, :last_examples, :last_see, :last_formats
+    attr_accessor :last_api_args, :last_errors, :last_successes, :last_params, :last_description, :last_examples, :last_see, :last_formats
     attr_reader :method_descriptions, :resource_descriptions
 
     def initialize
@@ -105,6 +105,7 @@ module Apipie
     def clear_last
       @last_api_args = []
       @last_errors = []
+      @last_successes = []
       @last_params = []
       @last_description = nil
       @last_examples = []
@@ -123,6 +124,12 @@ module Apipie
       errors = @last_errors.clone
       @last_errors.clear
       errors
+    end
+    
+    def get_successes
+      successes = @last_successes.clone
+      @last_successes.clear
+      successes
     end
 
     def get_api_args

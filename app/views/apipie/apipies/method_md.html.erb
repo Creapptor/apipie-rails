@@ -1,0 +1,75 @@
+<% @method[:apis].each do |api| %>
+
+**<%= raw api[:short_description] %>**
+----
+  <%= raw @method[:full_description] %>
+
+`<%= api[:http_method] %>` <%= api[:api_url] %>
+
+
+  
+<% end %>  
+    
+<% unless @method[:params].blank? %>
+**Params**
+
+Param name | Required | Description
+---------- | :------: | -----------
+<%= render(:partial => "params_md", :locals => {:params => @method[:params]}) %>
+<% end %>  
+
+<% unless @method[:formats].blank? %>
+**Supported Formats**
+
+  `<%= @method[:formats].join(', ') %>`
+<% end %>
+
+
+<% unless @method[:successes].blank? %>
+**Success Response:**
+  <% @method[:successes].each do |succ| %>
+  * **Code:** <%= succ[:code] %> <br />
+    **Content:** <%= succ[:description] %>
+    <% if succ[:sample] %>
+
+    **Sample:**
+```
+<%= succ[:sample].html_safe %>
+```<% end %>
+      <% if succ != @method[:successes].last %>
+      
+      OR
+      <% end %>
+  <% end %>
+<% end %> 
+ 
+<% unless @method[:errors].blank? %>
+**Error Response:**
+  <% @method[:errors].each do |err| %>
+  * **Code:** <%= err[:code] %> <br />
+    **Content:** <%= err[:description] %>
+    <% if err[:sample] %>
+
+    **Sample:**
+```
+<%= err[:sample].html_safe %>
+```<% end %>
+    
+      <% if err != @method[:errors].last %>
+      
+      OR
+      <% end %>
+  <% end %>
+<% end %> 
+
+
+<% unless @method[:examples].blank? %>
+**Sample Call<%= @method[:examples].count > 1 ? "s" : "" %>:**
+  <% @method[:examples].each do |example| %>
+```
+<%= example.html_safe %>
+```
+  <% end %>
+<% end %>
+
+<%= raw @doc[:copyright] %>

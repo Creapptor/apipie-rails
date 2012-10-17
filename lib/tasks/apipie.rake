@@ -4,6 +4,23 @@ require 'apipie/client/generator'
 
 namespace :apipie do
 
+  desc "Generate static markdown documentation"
+  task :markdown => :environment do
+    with_loaded_documentation do
+      out = ENV["OUT"] || File.join(::Rails.root, 'doc', 'apidoc')
+      subdir = File.basename(out)
+
+      copy_jscss(out)
+
+      Apipie.url_prefix = "./#{subdir}"
+      doc = Apipie.to_json
+      Apipie.url_prefix = "../#{subdir}"
+      generate_resource_md_pages(out, doc)
+      Apipie.url_prefix = "../../#{subdir}"
+      generate_method_md_pages(out, doc)
+    end
+  end
+
   desc "Generate static documentation"
   # You can specify OUT=output_base_file to have the following structure:
   #
@@ -100,6 +117,18 @@ namespace :apipie do
       File.open("#{resource_file_base}.json", "w") { |f| f << doc.to_json } if include_json
     end
   end
+  
+  def generate_resource_md_pages(file_base, doc, include_json = false)
+    doc[:docs][:resources].each do |resource_name, _|
+      resource_file_base = File.join(file_base, resource_name.to_s)
+      FileUtils.mkdir_p(File.dirname(resource_file_base)) unless File.exists?(File.dirname(resource_file_base))
+
+      doc = Apipie.to_json(resource_name)
+      render_page("#{resource_file_base}.md", "resource_md", {:doc => doc[:docs],
+                                                          :resource => doc[:docs][:resources].first}, 'apipie_md')
+      File.open("#{resource_file_base}.json", "w") { |f| f << doc.to_json } if include_json
+    end
+  end
 
   def generate_method_pages(file_base, doc, include_json = false)
     doc[:docs][:resources].each do |resource_name, resource_params|
@@ -111,6 +140,22 @@ namespace :apipie do
         render_page("#{method_file_base}.html", "method", {:doc => doc[:docs],
                                                            :resource => doc[:docs][:resources].first,
                                                            :method => doc[:docs][:resources].first[:methods].first})
+
+        File.open("#{method_file_base}.json", "w") { |f| f << doc.to_json } if include_json
+      end
+    end
+  end
+  
+  def generate_method_md_pages(file_base, doc, include_json = false)
+    doc[:docs][:resources].each do |resource_name, resource_params|
+      resource_params[:methods].each do |method|
+        method_file_base = File.join(file_base, resource_name.to_s, method[:name].to_s)
+        FileUtils.mkdir_p(File.dirname(method_file_base)) unless File.exists?(File.dirname(method_file_base))
+
+        doc = Apipie.to_json(resource_name, method[:name])
+        render_page("#{method_file_base}.md", "method_md", {:doc => doc[:docs],
+                                                           :resource => doc[:docs][:resources].first,
+                                                           :method => doc[:docs][:resources].first[:methods].first}, 'apipie_md')
 
         File.open("#{method_file_base}.json", "w") { |f| f << doc.to_json } if include_json
       end

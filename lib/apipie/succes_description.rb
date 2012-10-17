@@ -1,6 +1,6 @@
 module Apipie
 
-  class ErrorDescription
+  class SuccessDescription
 
     attr_reader :code, :description, :sample
 
@@ -10,9 +10,9 @@ module Apipie
       elsif args.count == 2
         args = {:code => args.first, :description => args.second}
       elsif args.count == 3
-        args = {:code => args.first, :description => args.second, :sample => args.third }        
+        args = {:code => args.first, :description => args.second, :sample => args.third }
       else
-        raise ArgumentError "ApipieError: Bad use of error method."
+        raise ArgumentError "ApipieError: Bad use of success method."
       end
       @code = args[:code] || args['code']
       @description = args[:desc] || args[:description] || args['desc'] || args['description']

@@ -213,6 +213,7 @@ module Apipie
         code << generate_apis_code(desc[:api])
         code << generate_params_code(desc[:params])
         code << generate_errors_code(desc[:errors])
+        code << generate_successe_code(desc[:successes])
         return code
       end
 
@@ -271,6 +272,15 @@ module Apipie
         end
         code
       end
+
+      def generate_successes_code(successes)
+        code = ""
+        successes.sort_by {|e| e[:code] }.each do |success|
+          code << "success :code => #{success[:code]}\n"
+        end
+        code
+      end
+
 
       def align_indented(text)
         shift_left = ensure_line_breaks(text.lines).map { |l| l[/^\s*/].size }.min
