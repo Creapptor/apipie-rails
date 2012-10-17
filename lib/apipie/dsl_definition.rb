@@ -97,9 +97,9 @@ module Apipie
     #     puts greeting
     #   end
     #
-    def param(param_name, *args, &block) #:doc:
+    def param(param_name, validator, desc_or_options = nil, options = {}, &block) #:doc:
       return unless Apipie.active_dsl?
-      Apipie.last_params << Apipie::ParamDescription.new(param_name, *args, &block)
+      Apipie.last_params << Apipie::ParamDescription.new(param_name, validator, desc_or_options, options, &block)
     end
 
     # create method api and redefine newly added method
@@ -125,7 +125,7 @@ module Apipie
 
               # check if required parameters are present
               if param.required && !params.has_key?(param.name)
-                raise ArgumentError.new("Expecting #{param.name} parameter.")
+                raise ParamMissing.new(param.name)
               end
 
               # params validations

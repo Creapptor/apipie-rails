@@ -20,58 +20,47 @@
 <% end %>
 
 <div>
-  <div class="row-fluid">
-      <div class="span6">
-        <!-- # Params !-->
-        <% unless @method[:params].blank? %>
-		    <h2>Params</h2>
-		    <table class='table'>
-		      <thead>
-		        <tr>
-		          <th>Param name</th>
-		          <th>Description</th>
-		        </tr>
-		      </thead>
-		      <tbody>
-		        <%= render(:partial => "params", :locals => {:params => @method[:params]}) %>
-		      </tbody>
-		    </table>
-		<% end %>
-      </div>
-      <div class="span6">
-	      <% unless @method[:see_url].blank? %>
-		    Also see <%= link_to @method[:see], @method[:see_url] %>.
-		  <% end %>
-		
-		  <%= raw @method[:full_description] %>
-      	
-        <!-- # Errors !-->
-        <% unless @method[:formats].blank? %>
-		    <h2>Supported Formats</h2>
-		    <%= @method[:formats].join(', ') %>
-		<% end %>
-      
-        <!-- # Examples !-->
-        <% unless @method[:examples].blank? %>
-		    <h2>Examples</h2>
-		    <% @method[:examples].each do |example| %>
-		      <pre><%= example %></pre>
-		    <% end %>
-		<% end %>
-        
-        <!-- # Errors !-->
-        <% unless @method[:errors].blank? %>
-	    <h2>Errors</h2>
-	    <% @method[:errors].each do |err| %>
-	      <%= err[:code] %>
-	      <%= err[:description] %>
-	      <br>
-	    <% end %>
-	  <% end %>
-      </div>
-  </div>  
+  <% unless @method[:see_url].blank? %>
+    Also see <%= link_to @method[:see], @method[:see_url] %>.
+  <% end %>
 
-  
+  <%= raw @method[:full_description] %>
+
+  <% unless @method[:examples].blank? %>
+    <h2>Examples</h2>
+    <% @method[:examples].each do |example| %>
+      <pre class="prettyprint"><%= example %></pre>
+    <% end %>
+  <% end %>
+
+  <% unless @method[:formats].blank? %>
+    <h2>Supported Formats</h2>
+    <%= @method[:formats].join(', ') %>
+  <% end %>
+
+  <% unless @method[:errors].blank? %>
+    <h2>Errors</h2>
+    <% @method[:errors].each do |err| %>
+      <%= err[:code] %>
+      <%= err[:description] %>
+      <br>
+    <% end %>
+  <% end %>
+
+  <% unless @method[:params].blank? %>
+    <h2>Params</h2>
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Param name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render(:partial => "params", :locals => {:params => @method[:params]}) %>
+      </tbody>
+    </table>
+  <% end %>
 </div>
 
 <% content_for :apipie_footer do %>

@@ -1,78 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PassDock</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<% %w[bundled/bootstrap.min.css
-	        application.css
-	        bundled/prettify.css
-	        bundled/font-awesome.css
-	        bundled/font-awesome-ie7.css
-	        bundled/bootstrap-responsive.min.css ].each do |file| %>
-	  <link type="text/css" rel="stylesheet"
-	          href="<%= Apipie.full_url("stylesheets/#{file}") %>"/>
-	<% end %>
-	<!-- IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
-	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-  </head>
-  <body>
-      <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </a>
-            <a class="brand" href="/"><img src="" width=24 style="margin-top: -6px;"> <b></b></a>
-            <div class="nav-collapse">
-              <ul class="nav">
-			      <li>
-			        <a href="/dashboard"><i class="icon-dashboard icon-large"></i>Dashboard</a>
-			      </li>
-				  <li>
-				    <a href="/templates"><i class="icon-sitemap icon-large"></i>Templates</a>
-				  </li>
-				  <li>
-				    <a href="/passes"><i class="icon-credit-card icon-large"></i>Passes</a>
-				  </li>
-			      <li>
-			        <a href="/settings"><i class="icon-cogs icon-large"></i>Settings</a>
-			      </li>				
-				  <li class="active">
-				    <a href="/doc"><i class="icon-bolt icon-large"></i>API</a>
-				  </li>
-				
-				  <li>
-				    <a href="http://support.passdock.com"><i class="icon-comments icon-large"></i>Support</a>
-				  </li>
-				</ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </div>
+<html>
+<head>
+  <title>API documentation</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <%= Apipie.include_stylesheets %>
+  <link type='text/css' rel='stylesheet' href='<%= Apipie.full_url("stylesheets/application.css")%>'/>
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div id='container'>
+        <%= yield %>
+        <%= render 'disqus' if Apipie.configuration.use_disqus? %>
       </div>
-
-      <div class="container well white">    
-            <%= yield %>
-      </div>
-    </div><!--/.fluid-container-->
-
-    <div class="container">    
-      <footer style="text-align:center;">
-        <p><%= yield :apipie_footer %></p>
-      </footer>
     </div>
-    <% %w[
-    bundled/jquery-1.7.2.js
-    bundled/bootstrap-collapse.js
-    bundled/prettify.js
-    apipie.js ].each do |file| %>
-    <script type="text/javascript"
-            src="<%= Apipie.full_url("javascripts/#{file}") %>"></script>
-  <% end %>
-  </body>
+    <hr>
+    <footer><%= yield :apipie_footer %></footer>
+  </div>
+  <%= Apipie.include_javascripts %>
+</body>
 </html>

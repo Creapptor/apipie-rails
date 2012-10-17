@@ -26,10 +26,11 @@ module Apipie
   end
 
   class Configuration
-    attr_accessor :app_name, :app_info, :copyright, :markup,
-      :validate, :api_base_url, :doc_base_url
+    attr_accessor :app_name, :app_info, :copyright, :markup, :disqus_shortname,
+      :validate, :api_base_url, :doc_base_url, :required_by_default, :layout
 
     alias_method :validate?, :validate
+    alias_method :required_by_default?, :required_by_default
 
     # matcher to be used in Dir.glob to find controllers to be reloaded e.g.
     #
@@ -87,6 +88,10 @@ module Apipie
       @generated_doc_disclaimer ||= "# DOC GENERATED AUTOMATICALLY: REMOVE THIS LINE TO PREVENT REGENARATING NEXT TIME"
     end
 
+    def use_disqus?
+      !@disqus_shortname.blank?
+    end
+
     def app_info
       Apipie.markup_to_html(@app_info)
     end
@@ -97,8 +102,11 @@ module Apipie
       @app_info = "Another API description"
       @copyright = nil
       @validate = true
+      @required_by_default = false
       @api_base_url = ""
       @doc_base_url = "/apipie"
+      @layout = "apipie/apipie"
+      @disqus_shortname = nil
     end
   end
 

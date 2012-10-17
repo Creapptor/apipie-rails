@@ -12,24 +12,31 @@ module Apipie
 
     attr_accessor :parent
 
-    def initialize(name, *args, &block)
+    def initialize(name, validator, desc_or_options = nil, options = {}, &block)
 
-      if args.size > 1 || !args.first.is_a?(Hash)
-        validator_type = args.shift || nil
-      else
-        validator_type = nil
+      if desc_or_options.is_a?(Hash) && options.empty?
+        options = desc_or_options
+      elsif desc_or_options.is_a?(String)
+        options[:desc] = desc_or_options
+      elsif !desc_or_options.nil?
+        raise ArgumentError.new("param description: expected description or options as 3rd parameter")
       end
-      options = args.pop || {}
+
+      options.symbolize_keys!
 
       @name = name
       @desc = Apipie.markup_to_html(options[:desc] || '')
-      @required = options[:required] || false
+      @required = if options.has_key? :required
+        options[:required]
+      else
+        Apipie.configuration.required_by_default?
+      end
       @allow_nil = options[:allow_nil] || false
 
       @validator = nil
-      unless validator_type.nil?
+      unless validator.nil?
         @validator =
-          Validator::BaseValidator.find(self, validator_type, options, block)
+          Validator::BaseValidator.find(self, validator, options, block)
         raise "Validator not found." unless validator
       end
     end
@@ -37,7 +44,9 @@ module Apipie
     def validate(value)
       return true if @allow_nil && value.nil?
       unless @validator.valid?(value)
-        raise ArgumentError.new(@validator.error)
+        error = @validator.error
+        error = ParamError.new(error) unless error.is_a? Exception
+        raise error
       end
     end
 
