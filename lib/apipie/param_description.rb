@@ -50,6 +50,10 @@ module Apipie
       end
     end
 
+    def description
+      return @desc
+    end
+
     def full_name
       name_parts = parents_and_self.map(&:name)
       return ([name_parts.first] + name_parts[1..-1].map { |n| "[#{n}]" }).join("")
