@@ -52,6 +52,23 @@
         <%= m[:formats].join(', ') %>
       <% end %>
 
+      <% unless m[:successes].blank? %>
+        <h2>Success Response:</h2>
+        <% m[:successes].each do |succ| %>
+        <%= succ[:code] %> <%= succ[:description] %><br />
+      
+          <% if succ[:sample] %>
+              <pre class="prettyprint">
+                  <%= succ[:sample].html_safe %>
+              </pre>
+
+          <% end %>
+            <% if succ != m[:successes].last %>
+                OR
+            <% end %>
+        <% end %>
+      <% end %> 
+
       <% unless m[:errors].blank? %>
         <h3>Errors</h3>
         <% m[:errors].each do |err| %>

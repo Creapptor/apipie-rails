@@ -38,6 +38,24 @@
     <%= @method[:formats].join(', ') %>
   <% end %>
 
+
+  <% unless @method[:successes].blank? %>
+    <h2>Success Response:</h2>
+    <% @method[:successes].each do |succ| %>
+    <%= succ[:code] %> <%= succ[:description] %><br />
+      
+      <% if succ[:sample] %>
+          <pre class="prettyprint">
+              <%= succ[:sample].html_safe %>
+          </pre>
+
+      <% end %>
+        <% if succ != @method[:successes].last %>
+            OR
+        <% end %>
+    <% end %>
+  <% end %> 
+  
   <% unless @method[:errors].blank? %>
     <h2>Errors</h2>
     <% @method[:errors].each do |err| %>
