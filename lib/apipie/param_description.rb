@@ -8,14 +8,24 @@ module Apipie
   # validator - Validator::BaseValidator subclass
   class ParamDescription
 
-    attr_reader :name, :desc, :required, :allow_nil, :validator
+    attr_reader :method_description, :name, :desc, :allow_nil, :validator, :options
 
-    attr_accessor :parent
+    attr_accessor :parent, :required
 
-    def initialize(name, validator, desc_or_options = nil, options = {}, &block)
+    def self.from_dsl_data(method_description, args)
+      param_name, validator, desc_or_options, options, block = args
+      Apipie::ParamDescription.new(method_description,
+                                   param_name,
+                                   validator,
+                                   desc_or_options,
+                                   options,
+                                   &block)
+    end
 
-      if desc_or_options.is_a?(Hash) && options.empty?
-        options = desc_or_options
+    def initialize(method_description, name, validator, desc_or_options = nil, options = {}, &block)
+
+      if desc_or_options.is_a?(Hash)
+        options = options.merge(desc_or_options)
       elsif desc_or_options.is_a?(String)
         options[:desc] = desc_or_options
       elsif !desc_or_options.nil?
@@ -24,19 +34,27 @@ module Apipie
 
       options.symbolize_keys!
 
+      # we save options to know what was passed in DSL
+      @options = options
+
+      @method_description = method_description
       @name = name
-      @desc = Apipie.markup_to_html(options[:desc] || '')
-      @required = if options.has_key? :required
-        options[:required]
+      @desc = Apipie.markup_to_html(@options[:desc] || '')
+      @parent = @options[:parent]
+      @required = if @options.has_key? :required
+        @options[:required]
       else
         Apipie.configuration.required_by_default?
       end
-      @allow_nil = options[:allow_nil] || false
+
+      @allow_nil = @options[:allow_nil] || false
+
+      action_awareness
 
       @validator = nil
       unless validator.nil?
         @validator =
-          Validator::BaseValidator.find(self, validator, options, block)
+          Validator::BaseValidator.find(self, validator, @options, block)
         raise "Validator not found." unless validator
       end
     end
@@ -92,6 +110,76 @@ module Apipie
           :validator => validator.to_s,
           :expected_type => validator.expected_type
         }
+      end
+    end
+
+    def merge_with(other_param_desc)
+      if self.validator && other_param_desc.validator
+        self.validator.merge_with(other_param_desc.validator)
+      else
+        self.validator ||= other_param_desc.validator
+      end
+      self
+    end
+
+    # merge param descripsiont. Allows defining hash params on more places
+    # (e.g. in param_groups). For example:
+    #
+    #     def_param_group :user do
+    #       param :user, Hash do
+    #         param :name, String
+    #       end
+    #     end
+    #
+    #     param_group :user
+    #     param :user, Hash do
+    #       param :password, String
+    #     end
+    def self.unify(params)
+      ordering = params.map(&:name)
+      params.group_by(&:name).map do |name, param_descs|
+        param_descs.reduce(&:merge_with)
+      end.sort_by { |param| ordering.index(param.name) }
+    end
+
+    # action awareness is being inherited from ancestors (in terms of
+    # nested params)
+    def action_aware?
+      if @options.has_key?(:action_aware)
+        return @options[:action_aware]
+      elsif @parent
+        @parent.action_aware?
+      else
+        false
+      end
+    end
+
+    def as_action
+      if @options[:param_group] && @options[:param_group][:options] &&
+          @options[:param_group][:options][:as]
+        @options[:param_group][:options][:as].to_s
+      elsif @parent
+        @parent.as_action
+      else
+        @method_description.method
+      end
+    end
+
+    # makes modification that are based on the action that the param
+    # is defined for. Typical for required and allow_nil variations in
+    # crate/update actions.
+    def action_awareness
+      if action_aware?
+        if !@options.has_key?(:allow_nil)
+          if @required
+            @allow_nil = false
+          else
+            @allow_nil = true
+          end
+        end
+        if as_action != "create"
+          @required = false
+        end
       end
     end
 

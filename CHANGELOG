@@ -1,0 +1,22 @@
+===========
+ Changelog
+===========
+
+v0.0.17
+-------
+
+* support for multiple see links at action and ability to provide
+  description of see links
+
+v0.0.16
+-------
+
+* Fix getting started being rendered even when documentation was available
+
+v0.0.15
+-------
+
+* Fix case when there is no documentation yet: with link to how to
+  start
+* Fix handling bad requests when cache is on
+* Fix params extractor in case there is already some documentation
