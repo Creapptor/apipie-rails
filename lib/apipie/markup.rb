@@ -7,7 +7,7 @@ module Apipie
       def initialize
         require 'rdoc'
         require 'rdoc/markup/to_html'
-        @rdoc ||= ::RDoc::Markup::ToHtml.new
+        @rdoc ||= ::RDoc::Markup::ToHtml.new({})
       end
 
       def to_html(text)
