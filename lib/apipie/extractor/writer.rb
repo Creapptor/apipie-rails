@@ -98,7 +98,7 @@ module Apipie
       end
 
       def load_old_examples
-        if File.exists?(@examples_file)
+        if File.exist?(@examples_file)
           return YAML.load(File.read(@examples_file))
         end
         return {}
@@ -203,7 +203,7 @@ module Apipie
       end
 
       def controller_content
-        raise ControllerNotFound.new unless File.exists? controller_path
+        raise ControllerNotFound.new unless File.exist? controller_path
         @controller_content ||= File.read(controller_path)
       end
 
