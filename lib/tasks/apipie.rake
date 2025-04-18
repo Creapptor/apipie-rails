@@ -87,19 +87,19 @@ namespace :apipie do
   end
 
   def generate_one_page(file_base, doc)
-    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exists?(File.dirname(file_base))
+    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exist?(File.dirname(file_base))
 
     render_page("#{file_base}-onepage.html", "static", {:doc => doc[:docs]})
   end
 
   def generate_plain_page(file_base, doc)
-    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exists?(File.dirname(file_base))
+    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exist?(File.dirname(file_base))
 
     render_page("#{file_base}-plain.html", "plain", {:doc => doc[:docs]}, nil)
   end
 
   def generate_index_page(file_base, doc, include_json = false)
-    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exists?(File.dirname(file_base))
+    FileUtils.mkdir_p(File.dirname(file_base)) unless File.exist?(File.dirname(file_base))
 
     render_page("#{file_base}.html", "index", {:doc => doc[:docs]})
 
@@ -109,7 +109,7 @@ namespace :apipie do
   def generate_resource_pages(file_base, doc, include_json = false)
     doc[:docs][:resources].each do |resource_name, _|
       resource_file_base = File.join(file_base, resource_name.to_s)
-      FileUtils.mkdir_p(File.dirname(resource_file_base)) unless File.exists?(File.dirname(resource_file_base))
+      FileUtils.mkdir_p(File.dirname(resource_file_base)) unless File.exist?(File.dirname(resource_file_base))
 
       doc = Apipie.to_json(resource_name)
       render_page("#{resource_file_base}.html", "resource", {:doc => doc[:docs],
@@ -121,7 +121,7 @@ namespace :apipie do
   def generate_resource_md_pages(file_base, doc, include_json = false)
     doc[:docs][:resources].each do |resource_name, _|
       resource_file_base = File.join(file_base, resource_name.to_s)
-      FileUtils.mkdir_p(File.dirname(resource_file_base)) unless File.exists?(File.dirname(resource_file_base))
+      FileUtils.mkdir_p(File.dirname(resource_file_base)) unless File.exist?(File.dirname(resource_file_base))
 
       doc = Apipie.to_json(resource_name)
       render_page("#{resource_file_base}.md", "resource_md", {:doc => doc[:docs],
@@ -134,7 +134,7 @@ namespace :apipie do
     doc[:docs][:resources].each do |resource_name, resource_params|
       resource_params[:methods].each do |method|
         method_file_base = File.join(file_base, resource_name.to_s, method[:name].to_s)
-        FileUtils.mkdir_p(File.dirname(method_file_base)) unless File.exists?(File.dirname(method_file_base))
+        FileUtils.mkdir_p(File.dirname(method_file_base)) unless File.exist?(File.dirname(method_file_base))
 
         doc = Apipie.to_json(resource_name, method[:name])
         render_page("#{method_file_base}.html", "method", {:doc => doc[:docs],
@@ -150,7 +150,7 @@ namespace :apipie do
     doc[:docs][:resources].each do |resource_name, resource_params|
       resource_params[:methods].each do |method|
         method_file_base = File.join(file_base, resource_name.to_s, method[:name].to_s)
-        FileUtils.mkdir_p(File.dirname(method_file_base)) unless File.exists?(File.dirname(method_file_base))
+        FileUtils.mkdir_p(File.dirname(method_file_base)) unless File.exist?(File.dirname(method_file_base))
 
         doc = Apipie.to_json(resource_name, method[:name])
         render_page("#{method_file_base}.md", "method_md", {:doc => doc[:docs],

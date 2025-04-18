@@ -165,7 +165,7 @@ module Apipie
     def recorded_examples
       return @recorded_examples if @recorded_examples
       tape_file = File.join(Rails.root,"doc","apipie_examples.yml")
-      if File.exists?(tape_file)
+      if File.exist?(tape_file)
         @recorded_examples = YAML.load_file(tape_file)
       else
         @recorded_examples = {}

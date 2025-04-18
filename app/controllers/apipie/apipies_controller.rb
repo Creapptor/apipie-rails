@@ -19,7 +19,7 @@ module Apipie
             path << ".html"
           end
           cache_file = File.join(Apipie.configuration.cache_dir, path)
-          if File.exists?(cache_file)
+          if File.exist?(cache_file)
             content_type = case params[:format]
                            when "json" then "application/json"
                            else "text/html"

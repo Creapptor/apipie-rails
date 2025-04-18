@@ -100,7 +100,7 @@ describe Apipie::ApipiesController do
     let(:cache_dir) { File.join(Rails.root, "tmp", "apipie-cache") }
 
     before do
-      FileUtils.rm_r(cache_dir) if File.exists?(cache_dir)
+      FileUtils.rm_r(cache_dir) if File.exist?(cache_dir)
       FileUtils.mkdir_p(File.join(cache_dir, "apidoc", "resource"))
       File.open(File.join(cache_dir, "apidoc.html"), "w") { |f| f << "apidoc.html cache" }
       File.open(File.join(cache_dir, "apidoc.json"), "w") { |f| f << "apidoc.json cache" }
@@ -112,7 +112,7 @@ describe Apipie::ApipiesController do
     end
 
     after do
-      FileUtils.rm_r(cache_dir) if File.exists?(cache_dir)
+      FileUtils.rm_r(cache_dir) if File.exist?(cache_dir)
     end
 
     it "uses the file in cache dir instead of generating the content on runtime" do
